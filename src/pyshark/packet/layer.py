@@ -137,9 +137,18 @@ class Layer(Pickleable):
                 tw.write(field_name + ':', green=True, bold=True)
             tw.write(field_line, bold=True)
 
+    def _remove_ntandSpaces(self,thing):
+        if not thing.startswith(thing[-1].upper()): #if it doesn't start with an upper case
+            thing=thing.replace(" ","")
+        return thing.replace("\n","").replace("\t","")
+
     def rpretty_print(self):
         oF = io.StringIO()
+        catch_all_field=""
+        layer_dict={}
+        fields_dict={}
         if self.layer_name == self.DATA_LAYER:
+            catch_all_field+="DATA"
             oF.write('DATA')
             return
 
@@ -147,9 +156,13 @@ class Layer(Pickleable):
         for field_line in self._get_all_field_lines():
             if ':' in field_line:
                 field_name, field_line = field_line.split(':', 1)
+                fields_dict.update({self._remove_ntandSpaces(field_name):self._remove_ntandSpaces(field_line)})
                 oF.write(field_name + ':')
+            catch_all_field+=field_line
             oF.write(field_line)
-        return oF.getvalue()
+        fields_dict.update({"catch_all":catch_all_field})
+        layer_dict.update({self.layer_name:fields_dict})
+        return oF.getvalue(),layer_dict
 
     def _get_all_fields_with_alternates(self):
         all_fields = list(self._all_fields.values())

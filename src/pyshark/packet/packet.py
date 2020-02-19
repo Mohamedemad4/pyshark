@@ -114,11 +114,14 @@ class Packet(Pickleable):
         for layer in self.layers:
             layer.pretty_print()
 
-    def rThepretty_print(self):
-        rpp=""
+    def returnPrintDict(self):
+        rpp={}
+        rr=""
         for layer in self.layers:
-         rpp+=layer.rpretty_print()
-        return rpp
+         l=layer.rpretty_print()
+         rpp.update(l[1])
+         rr+=l[0]
+        return rr,rpp
         
     # Alias
     show = pretty_print
