@@ -113,6 +113,13 @@ class Packet(Pickleable):
     def pretty_print(self):
         for layer in self.layers:
             layer.pretty_print()
+
+    def rThepretty_print(self):
+        rpp=""
+        for layer in self.layers:
+         rpp+=layer.rpretty_print()
+        return rpp
+        
     # Alias
     show = pretty_print
 

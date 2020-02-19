@@ -1,5 +1,5 @@
 import os
-
+import io
 import py
 
 from pyshark.packet.common import Pickleable
@@ -136,6 +136,20 @@ class Layer(Pickleable):
                 field_name, field_line = field_line.split(':', 1)
                 tw.write(field_name + ':', green=True, bold=True)
             tw.write(field_line, bold=True)
+
+    def rpretty_print(self):
+        oF = io.StringIO()
+        if self.layer_name == self.DATA_LAYER:
+            oF.write('DATA')
+            return
+
+        oF.write('Layer %s:' % self.layer_name.upper() + os.linesep)
+        for field_line in self._get_all_field_lines():
+            if ':' in field_line:
+                field_name, field_line = field_line.split(':', 1)
+                oF.write(field_name + ':')
+            oF.write(field_line)
+        return oF.getvalue()
 
     def _get_all_fields_with_alternates(self):
         all_fields = list(self._all_fields.values())
